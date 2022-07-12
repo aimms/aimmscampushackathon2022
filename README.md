@@ -94,7 +94,7 @@ Penalty is the largest difference between home games over the limit.
 
 Ex.: the difference in home games played between teams 0, 1 and 2 is not larger than 1 during the first four time slots.
 
-### Separataion Constrinats
+### Separation Constriants
 
 > \<SE1 teams="0;1" min="5" mode1="SLOTS" type="HARD"/>
 
