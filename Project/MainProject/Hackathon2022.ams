@@ -326,7 +326,7 @@ Model Main_EmployeeAssignment {
 		Procedure pr_processingXML {
 			Body: {
 				! Create matches
-				empty Match_Scheduling, ep_scheduledMatch;
+				empty s_matches;
 				cleanup s_matches;
 				
 				! Generate all matches
@@ -516,7 +516,7 @@ Model Main_EmployeeAssignment {
 				endfor;
 				
 				
-				p_compact := if sp_gameMode = "P" then 1 else 0 endif;
+				p_phased := if sp_gameMode = "P" then 1 else 0 endif;
 			}
 			Set s_loc_slots {
 				SubsetOf: s_slots;
@@ -548,7 +548,7 @@ Model Main_EmployeeAssignment {
 		Parameter p_matchPair {
 			IndexDomain: (i_match, i_match_aux);
 		}
-		Parameter p_compact;
+		Parameter p_phased;
 		DeclarationSection CA1 {
 			Set s_ca1 {
 				SubsetOf: Integers;
@@ -880,7 +880,7 @@ Model Main_EmployeeAssignment {
 				s_loc_teamsThisSlot := {};
 				
 				!Update remaining matches
-				pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_compact,p_oneMatchPerRound);
+				pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_phased,p_oneMatchPerRound);
 				s_loc_slots := {i_slot | ord(i_slot) <= (card(i_slot) / 2)};
 				ep_slot := first(i_loc_slot);
 				
@@ -898,10 +898,10 @@ Model Main_EmployeeAssignment {
 				            if p_NbResets > p_relaxThreshold then
 				                ! relaxing constraints (stuck on round)
 				                p_oneMatchPerRound := 0;
-				                pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_compact,p_oneMatchPerRound);
+				                pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_phased,p_oneMatchPerRound);
 				                p_NbResets := 0;
 				            else
-				                pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_compact,p_oneMatchPerRound);
+				                pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_phased,p_oneMatchPerRound);
 				            endif;            
 				        endif;
 				        ! Randomly select a match to add
@@ -917,11 +917,11 @@ Model Main_EmployeeAssignment {
 				            s_loc_slots := s_loc_slots - {ep_slot};
 				            ep_slot := first(i_loc_slot);
 				            s_loc_teamsThisSlot := {};
-				            pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_compact,p_oneMatchPerRound);
+				            pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_phased,p_oneMatchPerRound);
 				            break;
 				        endif;
 				        !Update remaining matches
-				        pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_compact,p_oneMatchPerRound);
+				        pr_remainingMatches(s_loc_matchingsLeft,s_loc_teamsThisSlot,p_phased,p_oneMatchPerRound);
 				    endrepeat;
 				endwhile;
 				
